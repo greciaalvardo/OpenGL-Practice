@@ -2,111 +2,143 @@
 
 Shader::Shader()
 {
-    shaderProgram = 0;
+    shaderID = 0;
     uniformModel = 0;
     uniformProjection = 0;
 }
 
-void Shader::CreateFromString(const char* vertexCode, const char* fragmentCode){
+void Shader::CreateFromString(const char* vertexCode, const char* fragmentCode)
+{
     CompileShader(vertexCode, fragmentCode);
 }
 
-void Shader::CompileShader(const char* vertexShader, const char* fragmentShader){
-    
-    //glCreateProgram creates program
-    //@return ID reference to the newly created program object
-    shaderProgram = glCreateProgram();
-    
-    AddShader(shaderProgram, vertexShader, GL_VERTEX_SHADER);
-    AddShader(shaderProgram, vertexShader, GL_FRAGMENT_SHADER);
-    
-    //next step -- attach the shaders to the program object
-    //glAttachShader(shaderProgram, vertexShader ); //...attaching vertex shader
-    
-    //glAttachShader( shaderProgram, fragmentShader ); //...attaching fragment shader
-    
-    // Check for compile time errors
-    GLint success;
-    GLchar infoLog[512];
-    
-    //link it all together!! :)
-    glLinkProgram(shaderProgram);
-    // Check above for linking errors and get error log if failed
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-    if (!success)
-    {
-        glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog );
-        std::cout << "ERROR::SHADER::PROGRAM::LINKING_FAILED\n" << infoLog << std::endl;
-    }
-    
-    //@param program
-    //@param name -- name of the uniform variable
-    uniformModel = glGetUniformLocation(shaderProgram, "model");
-    uniformProjection = glGetUniformLocation(shaderProgram, "projection");
+void Shader::CreateFromFiles(const char* vertexLocation, const char* fragmentLocation)
+{
+    std::string vertexString = ReadFile(vertexLocation);
+    std::string fragmentString = ReadFile(fragmentLocation);
+    const char* vertexCode = vertexString.c_str();
+    const char* fragmentCode = fragmentString.c_str();
+
+    CompileShader(vertexCode, fragmentCode);
 }
 
-GLuint Shader::GetProjectionLocation(){
+std::string Shader::ReadFile(const char* fileLocation)
+{
+    std::string content;
+    std::ifstream fileStream(fileLocation, std::ios::in);
+
+    if (!fileStream.is_open()) {
+        printf("Failed to read %s! File doesn't exist.", fileLocation);
+        return "";
+    }
+
+    std::string line = "";
+    while (!fileStream.eof())
+    {
+        std::getline(fileStream, line);
+        content.append(line + "\n");
+    }
+
+    fileStream.close();
+    return content;
+}
+
+void Shader::CompileShader(const char* vertexCode, const char* fragmentCode)
+{
+    shaderID = glCreateProgram();
+
+    if (!shaderID)
+    {
+        printf("Error creating shader program!\n");
+        return;
+    }
+
+    AddShader(shaderID, vertexCode, GL_VERTEX_SHADER);
+    AddShader(shaderID, fragmentCode, GL_FRAGMENT_SHADER);
+
+    GLint result = 0;
+    GLchar eLog[1024] = { 0 };
+
+    glLinkProgram(shaderID);
+    glGetProgramiv(shaderID, GL_LINK_STATUS, &result);
+    if (!result)
+    {
+        glGetProgramInfoLog(shaderID, sizeof(eLog), NULL, eLog);
+        printf("Error linking program: '%s'\n", eLog);
+        return;
+    }
+   
+    //START - this little section is messing everything up something about not binding vao i think
+    //-- except thats in another method
+   // glValidateProgram(shaderID);
+   // glGetProgramiv(shaderID, GL_VALIDATE_STATUS, &result);
+   // if (!result)
+   // {
+   //     glGetProgramInfoLog(shaderID, sizeof(eLog), NULL, eLog);
+   //     printf("Error validating program: '%s'\n", eLog);
+    //    return;
+    //}
+    //^^remember to not include this in the future since for some reason on mac it's a lil different
+
+    uniformProjection = glGetUniformLocation(shaderID, "projection");
+    uniformModel = glGetUniformLocation(shaderID, "model");
+}
+
+GLuint Shader::GetProjectionLocation()
+{
     return uniformProjection;
 }
-GLuint Shader::GetModelLocation(){
+GLuint Shader::GetModelLocation()
+{
     return uniformModel;
 }
 
-void Shader::UseShader(){
-    glUseProgram(shaderProgram);
+void Shader::UseShader()
+{
+    glUseProgram(shaderID);
 }
 
-void Shader::ClearShader(){
-    //delete off of graphics card
-    if(shaderProgram != 0){
-        glDeleteProgram(shaderProgram);
-        shaderProgram =0;
+void Shader::ClearShader()
+{
+    if (shaderID != 0)
+    {
+        glDeleteProgram(shaderID);
+        shaderID = 0;
     }
+
+    uniformModel = 0;
+    uniformProjection = 0;
 }
 
-void Shader::AddShader(GLuint theProgram, const char* shaderCode, GLenum shaderType){
-    
-    //GLuint shaderProgram = glCreateProgram( );
-    
+
+void Shader::AddShader(GLuint theProgram, const char* shaderCode, GLenum shaderType)
+{
+    GLuint theShader = glCreateShader(shaderType);
+
     const GLchar* theCode[1];
     theCode[0] = shaderCode;
-    // Build and compile our shader program
-    // Vertex shader
-    //glCreateShader takes the type of shader you want to create
-    GLuint vertexShader = glCreateShader( GL_VERTEX_SHADER );
-    //glShaderSource attaches shader source code to shaderobject
-    //@param shaderobject -- object we're compiling
-    //@param #ofstrings -- how many strings we're passing as source code
-    //@param actual source code of vertex shader -- the shader with the version #
-    //@ last param -- not too sure :/
-    glShaderSource( vertexShader, 1, theCode, NULL );
-    glCompileShader( vertexShader );
-    
-    GLint success;
-    GLchar infoLog[512];
-    
-    glGetShaderiv( vertexShader, GL_COMPILE_STATUS, &success );
-    if ( !success )
+
+    GLint codeLength[1];
+    codeLength[0] = strlen(shaderCode);
+
+    glShaderSource(theShader, 1, theCode, codeLength);
+    glCompileShader(theShader);
+
+    GLint result = 0;
+    GLchar eLog[1024] = { 0 };
+
+    glGetShaderiv(theShader, GL_COMPILE_STATUS, &result);
+    if (!result)
     {
-        glGetShaderInfoLog( vertexShader, 512, NULL, infoLog );
-        std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
+        glGetShaderInfoLog(theShader, sizeof(eLog), NULL, eLog);
+        printf("Error compiling the %d shader: '%s'\n", shaderType, eLog);
+        return;
     }
-    
-    // Fragment shader
-    GLuint fragmentShader = glCreateShader( GL_FRAGMENT_SHADER );
-    glShaderSource(fragmentShader, 1, theCode, NULL );
-    glCompileShader(fragmentShader );
-    
-    // Check for compile time errors
-    glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success );
-    
-    if ( !success )
-    {
-        glGetShaderInfoLog( fragmentShader, 512, NULL, infoLog );
-        std::cout << "ERROR::SHADER::FRAGMENT::COMPILATION_FAILED\n" << infoLog << std::endl;
-    }
+
+    glAttachShader(theProgram, theShader);
 }
 
-Shader::~Shader(){
+Shader::~Shader()
+{
     ClearShader();
 }

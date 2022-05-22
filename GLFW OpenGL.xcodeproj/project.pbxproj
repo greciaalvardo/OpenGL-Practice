@@ -9,12 +9,15 @@
 /* Begin PBXBuildFile section */
 		9022BD4E27F6A02100EF17EE /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9022BD4D27F6A02100EF17EE /* main.cpp */; };
 		9022BD5827F9697600EF17EE /* libGLEW.2.2.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9022BD5727F9697600EF17EE /* libGLEW.2.2.0.dylib */; };
-		9022BD5A27F969D200EF17EE /* libglfw.3.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 9022BD5927F969D200EF17EE /* libglfw.3.3.dylib */; };
 		9022BD6027FA7FC700EF17EE /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9022BD5527F6A2F400EF17EE /* OpenGL.framework */; };
 		9022BD692800100600EF17EE /* Mesh.hpp in Sources */ = {isa = PBXBuildFile; fileRef = 9022BD67280003E600EF17EE /* Mesh.hpp */; };
 		9022BD6B2800962000EF17EE /* Mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9022BD66280003E600EF17EE /* Mesh.cpp */; };
 		9022BD6E28009B2F00EF17EE /* Shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 9022BD6D28009B2F00EF17EE /* Shader.cpp */; };
 		9022BD702800A74900EF17EE /* Shader.h in Sources */ = {isa = PBXBuildFile; fileRef = 9022BD6C28009A3B00EF17EE /* Shader.h */; };
+		903976C32806449D008D6256 /* Window.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 903976C12806449D008D6256 /* Window.cpp */; };
+		903976C428064565008D6256 /* Window.hpp in Sources */ = {isa = PBXBuildFile; fileRef = 903976C22806449D008D6256 /* Window.hpp */; };
+		903976C628064856008D6256 /* libglfw.3.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 903976C528064856008D6256 /* libglfw.3.3.dylib */; settings = {ATTRIBUTES = (Required, ); }; };
+		903976CA283A9D25008D6256 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 903976C8283A9D25008D6256 /* Camera.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -41,6 +44,12 @@
 		9022BD67280003E600EF17EE /* Mesh.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Mesh.hpp; sourceTree = "<group>"; };
 		9022BD6C28009A3B00EF17EE /* Shader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Shader.h; sourceTree = "<group>"; };
 		9022BD6D28009B2F00EF17EE /* Shader.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Shader.cpp; sourceTree = "<group>"; };
+		903976C12806449D008D6256 /* Window.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Window.cpp; sourceTree = "<group>"; };
+		903976C22806449D008D6256 /* Window.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Window.hpp; sourceTree = "<group>"; };
+		903976C528064856008D6256 /* libglfw.3.3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw.3.3.dylib; path = ../../../../../../opt/homebrew/Cellar/glfw/3.3.7/lib/libglfw.3.3.dylib; sourceTree = "<group>"; };
+		903976C7280659A4008D6256 /* Shaders */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Shaders; sourceTree = "<group>"; };
+		903976C8283A9D25008D6256 /* Camera.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
+		903976C9283A9D25008D6256 /* Camera.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Camera.hpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -48,7 +57,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9022BD5A27F969D200EF17EE /* libglfw.3.3.dylib in Frameworks */,
+				903976C628064856008D6256 /* libglfw.3.3.dylib in Frameworks */,
 				9022BD5827F9697600EF17EE /* libGLEW.2.2.0.dylib in Frameworks */,
 				9022BD6027FA7FC700EF17EE /* OpenGL.framework in Frameworks */,
 			);
@@ -78,11 +87,16 @@
 			isa = PBXGroup;
 			children = (
 				9022BD6227FA835300EF17EE /* GLFW OpenGL.entitlements */,
+				903976C7280659A4008D6256 /* Shaders */,
 				9022BD6D28009B2F00EF17EE /* Shader.cpp */,
 				9022BD6C28009A3B00EF17EE /* Shader.h */,
 				9022BD66280003E600EF17EE /* Mesh.cpp */,
 				9022BD67280003E600EF17EE /* Mesh.hpp */,
 				9022BD4D27F6A02100EF17EE /* main.cpp */,
+				903976C12806449D008D6256 /* Window.cpp */,
+				903976C22806449D008D6256 /* Window.hpp */,
+				903976C8283A9D25008D6256 /* Camera.cpp */,
+				903976C9283A9D25008D6256 /* Camera.hpp */,
 			);
 			path = "GLFW OpenGL";
 			sourceTree = "<group>";
@@ -90,6 +104,7 @@
 		9022BD5427F6A2F400EF17EE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				903976C528064856008D6256 /* libglfw.3.3.dylib */,
 				9022BD5B27FA694600EF17EE /* GL */,
 				9022BD5927F969D200EF17EE /* libglfw.3.3.dylib */,
 				9022BD5727F9697600EF17EE /* libGLEW.2.2.0.dylib */,
@@ -155,8 +170,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				903976C428064565008D6256 /* Window.hpp in Sources */,
 				9022BD702800A74900EF17EE /* Shader.h in Sources */,
+				903976C32806449D008D6256 /* Window.cpp in Sources */,
 				9022BD6B2800962000EF17EE /* Mesh.cpp in Sources */,
+				903976CA283A9D25008D6256 /* Camera.cpp in Sources */,
 				9022BD692800100600EF17EE /* Mesh.hpp in Sources */,
 				9022BD6E28009B2F00EF17EE /* Shader.cpp in Sources */,
 				9022BD4E27F6A02100EF17EE /* main.cpp in Sources */,
@@ -292,6 +310,7 @@
 					/opt/homebrew/Cellar/glfw/3.3.7/include,
 					/opt/homebrew/Cellar/glew/2.2.0_1/include,
 					/Users/greciaalvarado/Downloads/glm,
+					/usr/local/include,
 				);
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -320,6 +339,7 @@
 					/opt/homebrew/Cellar/glfw/3.3.7/include,
 					/opt/homebrew/Cellar/glew/2.2.0_1/include,
 					/Users/greciaalvarado/Downloads/glm,
+					/usr/local/include,
 				);
 				"HEADER_SEARCH_PATHS[arch=*]" = /usr/local/include;
 				LIBRARY_SEARCH_PATHS = (
